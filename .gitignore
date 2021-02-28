@@ -1,3 +1,3 @@
-*.csv
-*.json
-
+OUT
+.vscode
+.vscode/*

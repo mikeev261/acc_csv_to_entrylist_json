@@ -1,0 +1,43 @@
+{
+    "entries": [
+        {
+            "drivers": [
+                {
+                    "playerID": "S765611xxxxxxxxxx1"
+                }
+            ],
+            "raceNumber": 88,
+            "forcedCarModel": -1,
+            "overrideDriverInfo": 0,
+            "isServerAdmin": 1
+        },
+        {
+            "drivers": [
+                {
+                    "firstName": "First",
+                    "lastName": "Driver",
+                    "shortName": "NO1",
+                    "driverCategory": 2,
+                    "playerID": "S765611xxxxxxxxxx3"
+                },
+                {
+                    "firstName": "Another",
+                    "lastName": "Person",
+                    "shortName": "NO2",
+                    "driverCategory": 1,
+                    "playerID": "S765611xxxxxxxxxx4"
+                }
+            ],
+            "raceNumber": 114,
+            "forcedCarModel": -1,
+            "overrideDriverInfo": 0,
+            "defaultGridPosition": -1,
+            "ballastKg": 0,
+            "restrictor": 0,
+            "customCar": "exampleCar.json",
+            "overrideCarModelForCustomCar": 1,
+            "isServerAdmin": 0
+        }
+    ],
+    "forceEntryList": 0
+}
