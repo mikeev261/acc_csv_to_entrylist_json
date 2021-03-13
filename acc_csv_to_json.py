@@ -31,41 +31,74 @@ CAR_3 = 10
 #Preload total allocations
 gt3_rem = TOTAL_GT3
 gt4_rem = TOTAL_GT4
+print ("-----------------------------------")
+print ("ACC CSV to JSON Entrylist Converter")
+print ("-----------------------------------")
+
+print ("\n AVAILABLE CARS:\n")
 
 car_dict = {
-    1: "Aston Martin V8 Vantage GT3",
-    2: "Aston Martin V12 Vantage GT3",
+    0: "Porsche 991 GT3 R",
+    1: "Mercedes AMG GT3 (2015)",
+    2: "Ferrari 488 GT3 (2018)",
     3: "Audi R8 LMS GT3",
-    4: "Audi R8 LMS GT3 Evo",
-    5: "Bentley Continental GT3",
-    6: "BMW M6 GT3",
-    7: "Ferrari GT3 (2018)",
-    8: "Ferrari GT3 Evo (2020)",
-    9: "Honda NSX GT3 (2018)",
-    10: "Honda NSX GT3 Evo (2019)",
-    11: "Jaaaaaaaaaaaaaaaaaaaaaaaaag GT3",
-    12: "Lamborghini Huracan GT3 (2015)",
-    13: "Lamborghini Huracan GT3 Evo (2019)",
-    14: "Lexus RC F GT3",
-    15: "McLaren 650S GT3",
-    16: "McLaren 720S GT3",
-    17: "Mercedes AMG GT3 (2015)",
-    18: "Mercedes AMG GT3 Evo (2020)",
-    19: "Nissan GT-R GT3 (2015)",
-    20: "Nissan GT-R GT3 (2018)",
-    21: "Porsche 991 GT3 R",
-    22: "Porsche 991 II GT3 R",
-    23: "Alpine A110 GT4",
-    24: "Aston Martin V8 Vantage GT4",
-    25: "Audi R8 LMS GT4",
-    26: "BMW M4 GT4",
-    27: "Chevrolet Camaro GT4.R",
-    28: "Ginetta G55 GT4",
-    29: "KTM X-Bow GT4",
-    30: "Maserati Granturismo MC GT4",
-    31: "McLaren 570S GT4",
-    32: "Mercedes AMG GT4",
-    33: "Porsche 718 Cayman GT4 Clubsport",
+    4: "Lamborghini Huracan GT3 (2015)",
+    5: "McLaren 650S GT3",
+    6: "Nissan GT-R GT3 (2018)",
+    7: "BMW M6 GT3",
+    8: "Bentley Continental GT3 (2018)",
+    9: "Porsche 991II GT3 Cup",
+    10: "Nissan GT-R GT3 (2017)",
+    11: "Bentley Continental GT3 (2016)",
+    12: "Aston Martin V12 Vantage GT3",
+    13: "Lamborghini Gallardo R-EX GT3",
+    14: "Jaaaaaaaaaaaaaaaaaaaaaaaaag GT3",
+    15: "Lexus RC F GT3",
+    16: "Lamborghini Huracan GT3 Evo (2019)",
+    17: "Honda NSX GT3 (2018)",
+    18: "Lamborghini Huracan SuperTrofeo",
+    19: "Audi R8 LMS GT3 Evo",
+    20: "Aston Martin V8 Vantage GT3",
+    21: "Honda NSX GT3 Evo (2019)",
+    22: "McLaren 720S GT3",
+    23: "Porsche 991 II GT3 R",
+    24: "Ferrari 488 GT3 Evo (2020)",
+    25: "Mercedes AMG GT3 Evo (2020)",
+    26: "",
+    27: "",
+    28: "",
+    29: "",
+    30: "",
+    31: "",
+    32: "",
+    33: "",
+    34: "",
+    35: "",
+    36: "",
+    37: "",
+    38: "",
+    39: "",
+    41: "",
+    42: "",
+    43: "",
+    44: "",
+    45: "",
+    46: "",
+    47: "",
+    48: "",
+    49: "",
+    50: "Alpine A110 GT4",
+    51: "Aston Martin V8 Vantage GT4",
+    52: "Audi R8 LMS GT4",
+    53: "BMW M4 GT4",
+    54: "",
+    55: "Chevrolet Camaro GT4.R",
+    56: "Ginetta G55 GT4",
+    57: "KTM X-Bow GT4",
+    58: "Maserati Granturismo MC GT4",
+    59: "McLaren 570S GT4",
+    60: "Mercedes AMG GT4",
+    61: "Porsche 718 Cayman GT4 Clubsport",
 }
 
 
@@ -73,14 +106,12 @@ car_rem = array.array('I') #Instantiate car_rem array (empty)
 
 for car in car_dict:
     car_rem.append(TOTAL_CAR_PER_TYPE) #Initialize a new per-type value
-    print(car, '->', car_dict[car])
+    if(bool(car_dict[car])):
+        print(car, ': ', car_dict[car])
 
-car_rem[5] -= 1;
+#car_rem[5] -= 1;
+#print(car_rem)
 
-print(car_rem)
-print ("-----------------------------------")
-print ("ACC CSV to JSON Entrylist Converter")
-print ("-----------------------------------")
 
 #def make_json_top():
 input_csv = ''
@@ -92,60 +123,71 @@ if(arguments < 1):
 input_csv = sys.argv[1]
 try:
     admin_steam_id = sys.argv[2]
-    print ('Admin declared as ' + admin_steam_id)
+    print ('\nAdmin declared as ' + admin_steam_id)
 except:
     admin_steam_id = ""
-    print ('INFO: No Admin ID Declared. If you want someone to have admin access, re-run with their S# as a 2nd argument.\n')
+    print ('\nINFO: No Admin ID Declared. If you want someone to have admin access, re-run with their S# as a 2nd argument.\n')
 
 print ('\nINFO: Input CSV: '+input_csv+'\n')
 print ('INFO: Output JSON: entrylist.json\n')
 
 
-def read_csv_write_json(input_csv, json_file):
-  outfile = open(output_json, "w")
+def read_csv_write_json(input_csv, json_file, lead):
   csv_rows = []
   with open(input_csv) as csv_file:
     next(csv_file) # skip header line
     reader = csv.reader(csv_file) #read the CSV file and store that as "reader"
-    json_top = {} #Initialize the top layer of the JSON
-    entries = [] #Initialize the top of entries (one below json_top)
     row_index = 0 #Initialize the row index
 
+    if(lead):
+        json_top = {} #Initialize the top layer of the JSON
+        entries = [] #Initialize the top of entries (one below json_top)
+
     for row in reader:
-      teams = {}
+        if(lead):
+            team = {}
+            driver = {}
 
-      driver1 = {}
-      driver1['firstName'] = row[FIRST]
-      driver1['lastName'] = row[LAST]
-      driver1['shortName'] = (driver1['lastName'][0:3]).upper()
-      driver1['driverCategory'] = 3
-      driver1['playerID'] = "S"+row[STEAM_ID]
+        driver['firstName'] = row[FIRST]
+        driver['lastName'] = row[LAST]
+        driver['shortName'] = (driver['lastName'][0:3]).upper()
+        driver['driverCategory'] = 3
+        driver['playerID'] = "S"+row[STEAM_ID]
       
-      teams['drivers'] = [driver1]
+        team['drivers'] = [driver]
 
-      teams['overrideDriverInfo'] = 0
-      if(driver1['playerID']==admin_steam_id):
-        teams['isServerAdmin'] = 1
-      else:
-        teams['isServerAdmin'] = 0
-      entries.append(teams)
+        team['overrideDriverInfo'] = 0
+        if(driver['playerID']==admin_steam_id):
+            team['isServerAdmin'] = 1
+        else:
+            team['isServerAdmin'] = 0
+        entries.append(team)
 
 
-      row_index += 1
-      #print(row[EMAIL])
+        row_index += 1
+        #print(row[EMAIL])
     json_top['configVersion'] = 1
     json_top['entries'] = entries
     json_top['forceEntryList'] = 1
-    print(json.dumps(json_top), file=outfile)
-    outfile.close()
+    print(json.dumps(json_top, indent=4), file=outfile)
     
     print ('-----------')
     print ('VROOM VROOM')
 
-def convert_write_json(data, json_file):
-  with open(json_file, "w") as f:
-    f.write(json.dumps(data, sort_keys=False, indent=4, separators=(',', ': ')))
-    f.write(json.dumps(data))
+#def convert_write_json(data, json_file):
+#  with open(json_file, "w") as f:
+#    f.write(json.dumps(data, sort_keys=False, indent=4, separators=(',', ': ')))
+#    f.write(json.dumps(data))
 
 
-read_csv_write_json(input_csv, output_json)
+#Open the JSON output file
+outfile = open(output_json, "w")
+
+#First, form teams by applying lead drivers ONLY
+read_csv_write_json(input_csv, outfile, 1)
+
+#Next, populate teams with teammates
+#read_csv_write_json(input_csv, outfile, 0)
+
+#Close the JSON outfile
+outfile.close()
