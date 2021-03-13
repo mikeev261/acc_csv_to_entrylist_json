@@ -113,7 +113,7 @@ for car in car_dict:
 #print(car_rem)
 
 
-#def make_json_top():
+#def make_top_dict():
 input_csv = ''
 output_json = 'entrylist.json'
 arguments = len(sys.argv) - 1
@@ -136,8 +136,7 @@ def car_num_lookup(car_dict, car_name):
         if(car_dict[car] == car_name):
             return car
 
-def read_csv_write_json(input_csv, json_file, lead):
-  outfile = open(output_json, "r+") #Re-open as r/w
+def read_csv_write_json(input_csv, lead):
   #outfile.seek(0) #Rewind
   csv_rows = []
   with open(input_csv) as csv_file:
@@ -145,8 +144,7 @@ def read_csv_write_json(input_csv, json_file, lead):
     reader = csv.reader(csv_file) #read the CSV file and store that as "reader"
 
     if(lead):
-        json_top = {} #Initialize the top layer of the JSON
-        entries = [] #Initialize the top of entries (one below json_top)
+        entries = [] #Initialize the top of entries (one below top_dict)
 
     for row in reader:
         driver = {} #Always initialize this for every pass
@@ -181,17 +179,16 @@ def read_csv_write_json(input_csv, json_file, lead):
 
 
         #if(not lead): #We are now iterating through the JSON to add the teammates
-        #    for entries in outfile
-        #    drivers.append(driver)
+            #for entry in json_data['entries']:
+                #drivers.append(driver)
+            #    print(entry)
 
 
         #print(row[EMAIL])
     if(lead): #Team info
-        json_top['configVersion'] = 1
-        json_top['entries'] = entries
-        json_top['forceEntryList'] = 1
-        print(json.dumps(json_top, indent=4), file=outfile)
-    outfile.close()
+        top_dict['configVersion'] = 1
+        top_dict['entries'] = entries
+        top_dict['forceEntryList'] = 1
 
     
 
@@ -205,12 +202,18 @@ def read_csv_write_json(input_csv, json_file, lead):
 #Open the JSON output file
 outfile = open(output_json, "w")
 
-#First, form teams by applying lead drivers ONLY
-read_csv_write_json(input_csv, outfile, 1)
+top_dict = {} #Initialize the top dict
 
+
+#First, form teams by applying lead drivers ONLY
+read_csv_write_json(input_csv, 1)
 
 #Next, populate teams with teammates
-read_csv_write_json(input_csv, outfile, 0)
+read_csv_write_json(input_csv, 0)
+
+
+print(json.dumps(top_dict, indent=4), file=outfile) #Print our dictionary out to JSON
+outfile.close() #Close the JSON file
 
 print ('-----------')
 print ('VROOM VROOM')
