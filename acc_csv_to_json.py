@@ -210,7 +210,7 @@ read_csv_write_json(input_csv, outfile, 1)
 
 
 #Next, populate teams with teammates
-#read_csv_write_json(input_csv, outfile, 0)
+read_csv_write_json(input_csv, outfile, 0)
 
 print ('-----------')
 print ('VROOM VROOM')
