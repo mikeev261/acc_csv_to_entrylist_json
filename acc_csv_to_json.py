@@ -136,6 +136,33 @@ def car_num_lookup(car_dict, car_name):
         if(car_dict[car] == car_name):
             return car
 
+def check_car(car):
+    if(car_rem[car] == 0):
+        return False
+    else: 
+        if(car < 50): #GT3
+            if(gt3_rem == 0):
+                return False
+            else:
+                return True
+        else: #GT4
+            if(gt3_rem == 0):
+                return False
+            else: 
+                return True
+
+def select_car(driver, car1, car2, car3):
+    if(check_car(car1)):
+        return car1
+    elif(check_car(car2)):
+        return car2
+    elif(check_car(car3)):
+        return car3
+    else:
+        sys.exit("ERROR: Driver " + driver + " had no valid cars selected!")
+
+
+
 def read_csv_write_json(input_csv, lead):
   #outfile.seek(0) #Rewind
   csv_rows = []
@@ -147,8 +174,16 @@ def read_csv_write_json(input_csv, lead):
         entries = [] #Initialize the top of entries (one below top_dict)
 
     for row in reader:
+        gt3 = False
         driver = {} #Always initialize this for every pass
         if(lead): #First pass
+            #Figure out if the car selection is legal
+            car_num1 = car_num_lookup(car_dict, row[CAR_1])
+            car_num2 = car_num_lookup(car_dict, row[CAR_2])
+            car_num3 = car_num_lookup(car_dict, row[CAR_2])
+            drivername = str(row[FIRST] + row[LAST])
+            car_num = select_car(drivername, car_num1, car_num2, car_num3)
+
             team = {}
             if(row[LEAD_DRIVER] == "No"): #Not the lead driver, skip for this pass
                 continue #Skip iteration of this loop
@@ -172,7 +207,7 @@ def read_csv_write_json(input_csv, lead):
             else:
                 team['isServerAdmin'] = 0
             
-            team['forcedCarModel'] = car_num_lookup(car_dict, row[CAR_1])
+            team['forcedCarModel'] = car_num
             team['raceNumber'] = int(row[RACE_NUM])
             entries.append(team)
 
@@ -186,7 +221,7 @@ def read_csv_write_json(input_csv, lead):
                     for key2 in top_dict[key][0]:
                         print(top_dict[key][0][key2])
                         team_race_number = top_dict[key][0]['raceNumber']
-                        if(key2 == "drivers" and row[RACE_NUM] == team_race_number):
+                        if(key2 == "drivers" and int(row[RACE_NUM]) == team_race_number):
                             top_dict[key][0][key2].append(driver)
 
 
