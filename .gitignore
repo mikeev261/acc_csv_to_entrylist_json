@@ -1,6 +1,4 @@
 OUT
-.vscode
-.vscode/*
 *.code-workspace
 entrylist.json
 .python-version
