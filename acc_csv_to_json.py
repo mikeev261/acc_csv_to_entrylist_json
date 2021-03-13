@@ -131,6 +131,10 @@ except:
 print ('\nINFO: Input CSV: '+input_csv+'\n')
 print ('INFO: Output JSON: entrylist.json\n')
 
+def car_num_lookup(car_dict, car_name):
+    for car in car_dict:
+        if(car_dict[car] == car_name):
+            return car
 
 def read_csv_write_json(input_csv, json_file, lead):
   csv_rows = []
@@ -147,21 +151,30 @@ def read_csv_write_json(input_csv, json_file, lead):
         if(lead):
             team = {}
             driver = {}
+            if(row[LEAD_DRIVER] == "No"): #Not the lead driver, skip for this pass
+                continue #Skip iteration of this loop
+        else: #not lead
+            if(row[LEAD_DRIVER] == "Yes"): #Lead driver, skip for this pass (we got them already)
+                continue #Skip iteration of this loop
 
         driver['firstName'] = row[FIRST]
         driver['lastName'] = row[LAST]
         driver['shortName'] = (driver['lastName'][0:3]).upper()
         driver['driverCategory'] = 3
         driver['playerID'] = "S"+row[STEAM_ID]
-      
+    
         team['drivers'] = [driver]
-
-        team['overrideDriverInfo'] = 0
-        if(driver['playerID']==admin_steam_id):
-            team['isServerAdmin'] = 1
-        else:
-            team['isServerAdmin'] = 0
-        entries.append(team)
+        if(lead): #Team info
+            team['overrideDriverInfo'] = 1
+        
+            if(driver['playerID']==admin_steam_id):
+                team['isServerAdmin'] = 1
+            else:
+                team['isServerAdmin'] = 0
+            
+            team['forcedCarModel'] = car_num_lookup(car_dict, row[CAR_1])
+            team['raceNumber'] = int(row[RACE_NUM])
+            entries.append(team)
 
 
         row_index += 1
