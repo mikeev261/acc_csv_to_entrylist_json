@@ -178,10 +178,16 @@ def read_csv_write_json(input_csv, lead):
 
 
 
-        #if(not lead): #We are now iterating through the JSON to add the teammates
-            #for entry in json_data['entries']:
-                #drivers.append(driver)
-            #    print(entry)
+        if(not lead): #We are now iterating through the dict to add the teammates
+            for key in top_dict:
+                #if isinstance(top_dict[key], list):
+                if(key == "entries"):
+                    print(top_dict[key][0])
+                    for key2 in top_dict[key][0]:
+                        print(top_dict[key][0][key2])
+                        team_race_number = top_dict[key][0]['raceNumber']
+                        if(key2 == "drivers" and row[RACE_NUM] == team_race_number):
+                            top_dict[key][0][key2].append(driver)
 
 
         #print(row[EMAIL])
@@ -207,7 +213,18 @@ top_dict = {} #Initialize the top dict
 #First, form teams by applying lead drivers ONLY
 read_csv_write_json(input_csv, 1)
 
-print(top_dict)
+#print(top_dict)
+
+#for key, value in top_dict.items():
+#    if(key == "entries"):
+#        #print(value)
+#        for key2, value2 in value.items(): 
+#            print(value2)
+
+
+##print(top_dict)
+print("----------")
+
 
 #Next, populate teams with teammates
 read_csv_write_json(input_csv, 0)
