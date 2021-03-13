@@ -137,20 +137,21 @@ def car_num_lookup(car_dict, car_name):
             return car
 
 def read_csv_write_json(input_csv, json_file, lead):
+  outfile = open(output_json, "r+") #Re-open as r/w
+  #outfile.seek(0) #Rewind
   csv_rows = []
   with open(input_csv) as csv_file:
     next(csv_file) # skip header line
     reader = csv.reader(csv_file) #read the CSV file and store that as "reader"
-    row_index = 0 #Initialize the row index
 
     if(lead):
         json_top = {} #Initialize the top layer of the JSON
         entries = [] #Initialize the top of entries (one below json_top)
 
     for row in reader:
-        if(lead):
+        driver = {} #Always initialize this for every pass
+        if(lead): #First pass
             team = {}
-            driver = {}
             if(row[LEAD_DRIVER] == "No"): #Not the lead driver, skip for this pass
                 continue #Skip iteration of this loop
         else: #not lead
@@ -163,8 +164,9 @@ def read_csv_write_json(input_csv, json_file, lead):
         driver['driverCategory'] = 3
         driver['playerID'] = "S"+row[STEAM_ID]
     
-        team['drivers'] = [driver]
+        
         if(lead): #Team info
+            team['drivers'] = [driver]
             team['overrideDriverInfo'] = 1
         
             if(driver['playerID']==admin_steam_id):
@@ -177,15 +179,22 @@ def read_csv_write_json(input_csv, json_file, lead):
             entries.append(team)
 
 
-        row_index += 1
+
+        #if(not lead): #We are now iterating through the JSON to add the teammates
+        #    for entries in outfile
+        #    drivers.append(driver)
+
+
         #print(row[EMAIL])
-    json_top['configVersion'] = 1
-    json_top['entries'] = entries
-    json_top['forceEntryList'] = 1
-    print(json.dumps(json_top, indent=4), file=outfile)
+    if(lead): #Team info
+        json_top['configVersion'] = 1
+        json_top['entries'] = entries
+        json_top['forceEntryList'] = 1
+        print(json.dumps(json_top, indent=4), file=outfile)
+    outfile.close()
+
     
-    print ('-----------')
-    print ('VROOM VROOM')
+
 
 #def convert_write_json(data, json_file):
 #  with open(json_file, "w") as f:
@@ -199,8 +208,10 @@ outfile = open(output_json, "w")
 #First, form teams by applying lead drivers ONLY
 read_csv_write_json(input_csv, outfile, 1)
 
+
 #Next, populate teams with teammates
 #read_csv_write_json(input_csv, outfile, 0)
 
+print ('-----------')
+print ('VROOM VROOM')
 #Close the JSON outfile
-outfile.close()
