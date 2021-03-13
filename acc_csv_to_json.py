@@ -204,9 +204,10 @@ outfile = open(output_json, "w")
 
 top_dict = {} #Initialize the top dict
 
-
 #First, form teams by applying lead drivers ONLY
 read_csv_write_json(input_csv, 1)
+
+print(top_dict)
 
 #Next, populate teams with teammates
 read_csv_write_json(input_csv, 0)
