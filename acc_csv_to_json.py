@@ -1,7 +1,8 @@
 #!/usr/bin/python3
-#import pandas as pd
+import pandas as pd
 import sys, getopt
 import json
+import array
 import csv
 #USAGE: -i <inputfile.csv> -o <outputfile.json>
 
@@ -68,6 +69,15 @@ car_dict = {
 }
 
 
+car_rem = array.array('I') #Instantiate car_rem array (empty)
+
+for car in car_dict:
+    car_rem.append(TOTAL_CAR_PER_TYPE) #Initialize a new per-type value
+    print(car, '->', car_dict[car])
+
+car_rem[5] -= 1;
+
+print(car_rem)
 print ("-----------------------------------")
 print ("ACC CSV to JSON Entrylist Converter")
 print ("-----------------------------------")
