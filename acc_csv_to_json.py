@@ -10,7 +10,7 @@ import csv
 # ADJUSTMENTS
 TOTAL_GT3 = 25
 TOTAL_GT4 = 25
-TOTAL_CAR_PER_TYPE = 4
+TOTAL_CAR_PER_TYPE = 3
 
 
 #################
@@ -48,14 +48,14 @@ car_dict = {
     7: "BMW M6 GT3",
     8: "Bentley Continental GT3 (2018)",
     9: "Porsche 991II GT3 Cup",
-    10: "Nissan GT-R GT3 (2017)",
-    11: "Bentley Continental GT3 (2016)",
+    10: "Nissan GT-R GT3 (2015)",
+    11: "Bentley Continental GT3 (2015)",
     12: "Aston Martin V12 Vantage GT3",
     13: "Lamborghini Gallardo R-EX GT3",
     14: "Jaaaaaaaaaaaaaaaaaaaaaaaaag GT3",
     15: "Lexus RC F GT3",
     16: "Lamborghini Huracan GT3 Evo (2019)",
-    17: "Honda NSX GT3 (2018)",
+    17: "Honda NSX GT3 (2017)",
     18: "Lamborghini Huracan SuperTrofeo",
     19: "Audi R8 LMS GT3 Evo",
     20: "Aston Martin V8 Vantage GT3",
@@ -109,11 +109,7 @@ for car in car_dict:
     if(bool(car_dict[car])):
         print(car, ': ', car_dict[car])
 
-#car_rem[5] -= 1;
-#print(car_rem)
 
-
-#def make_top_dict():
 input_csv = ''
 output_json = 'entrylist.json'
 arguments = len(sys.argv) - 1
@@ -135,6 +131,7 @@ def car_num_lookup(car_dict, car_name):
     for car in car_dict:
         if(car_dict[car] == car_name):
             return car
+    sys.exit("ERROR: CAR NOT FOUND. Tried a car named: " + car_name)
 
 def check_car(car):
     if(car_rem[car] == 0):
@@ -164,7 +161,6 @@ def select_car(driver, car1, car2, car3):
 
 
 def read_csv_write_json(input_csv, lead):
-  #outfile.seek(0) #Rewind
   csv_rows = []
   with open(input_csv) as csv_file:
     next(csv_file) # skip header line
@@ -183,7 +179,7 @@ def read_csv_write_json(input_csv, lead):
             car_num3 = car_num_lookup(car_dict, row[CAR_2])
             drivername = str(row[FIRST] + row[LAST])
             car_num = select_car(drivername, car_num1, car_num2, car_num3)
-
+            gt3 = car_num < 50
             team = {}
             if(row[LEAD_DRIVER] == "No"): #Not the lead driver, skip for this pass
                 continue #Skip iteration of this loop
@@ -194,7 +190,11 @@ def read_csv_write_json(input_csv, lead):
         driver['firstName'] = row[FIRST]
         driver['lastName'] = row[LAST]
         driver['shortName'] = (driver['lastName'][0:3]).upper()
-        driver['driverCategory'] = 3
+        if(lead):
+            if(gt3):
+                driver['driverCategory'] = 3
+            else: #GT4
+                driver['driverCategory'] = 2
         driver['playerID'] = "S"+row[STEAM_ID]
     
         
@@ -211,54 +211,25 @@ def read_csv_write_json(input_csv, lead):
             team['raceNumber'] = int(row[RACE_NUM])
             entries.append(team)
 
-
-
         if(not lead): #We are now iterating through the dict to add the teammates
             for key in top_dict:
-                #if isinstance(top_dict[key], list):
                 if(key == "entries"):
-                    print(top_dict[key][0])
                     for key2 in top_dict[key][0]:
-                        print(top_dict[key][0][key2])
                         team_race_number = top_dict[key][0]['raceNumber']
                         if(key2 == "drivers" and int(row[RACE_NUM]) == team_race_number):
+                            driver['driverCategory'] = top_dict[key][0][key2][0]['driverCategory']
                             top_dict[key][0][key2].append(driver)
-
-
-        #print(row[EMAIL])
     if(lead): #Team info
         top_dict['configVersion'] = 1
         top_dict['entries'] = entries
         top_dict['forceEntryList'] = 1
 
-    
-
-
-#def convert_write_json(data, json_file):
-#  with open(json_file, "w") as f:
-#    f.write(json.dumps(data, sort_keys=False, indent=4, separators=(',', ': ')))
-#    f.write(json.dumps(data))
-
-
 #Open the JSON output file
 outfile = open(output_json, "w")
-
 top_dict = {} #Initialize the top dict
 
 #First, form teams by applying lead drivers ONLY
 read_csv_write_json(input_csv, 1)
-
-#print(top_dict)
-
-#for key, value in top_dict.items():
-#    if(key == "entries"):
-#        #print(value)
-#        for key2, value2 in value.items(): 
-#            print(value2)
-
-
-##print(top_dict)
-print("----------")
 
 
 #Next, populate teams with teammates
@@ -268,6 +239,5 @@ read_csv_write_json(input_csv, 0)
 print(json.dumps(top_dict, indent=4), file=outfile) #Print our dictionary out to JSON
 outfile.close() #Close the JSON file
 
-print ('-----------')
-print ('VROOM VROOM')
+print ('DONE!')
 #Close the JSON outfile
