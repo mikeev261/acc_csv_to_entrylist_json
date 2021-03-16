@@ -9,7 +9,7 @@
             "type": "python",
             "request": "launch",
             "program": "acc_csv_to_json.py ",
-            "args": [".\\ACC Endurance Test Event (Responses) - Form Responses 1 (1).csv"],
+            "args": [".\\BETA_ ACC Endurance Test Event.csv"],
             "console": "integratedTerminal",
             "env": {"PYTHONPATH": "${workspaceRoot}/.env"}
         }

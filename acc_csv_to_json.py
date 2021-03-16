@@ -4,6 +4,7 @@ import sys, getopt
 import json
 import array
 import csv
+import code
 #USAGE: -i <inputfile.csv> -o <outputfile.json>
 
 #################
@@ -62,7 +63,7 @@ car_dict = {
     21: "Honda NSX GT3 Evo (2019)",
     22: "McLaren 720S GT3",
     23: "Porsche 991 II GT3 R",
-    24: "Ferrari 488 GT3 Evo (2020)",
+    24: "Ferrari GT3 Evo (2020)",
     25: "Mercedes AMG GT3 Evo (2020)",
     26: "",
     27: "",
@@ -214,11 +215,12 @@ def read_csv_write_json(input_csv, lead):
         if(not lead): #We are now iterating through the dict to add the teammates
             for key in top_dict:
                 if(key == "entries"):
-                    for key2 in top_dict[key][0]:
-                        team_race_number = top_dict[key][0]['raceNumber']
-                        if(key2 == "drivers" and int(row[RACE_NUM]) == team_race_number):
-                            driver['driverCategory'] = top_dict[key][0][key2][0]['driverCategory']
-                            top_dict[key][0][key2].append(driver)
+                    for i in range(len(top_dict[key])): #This is a list of dicts (each driver's form entry, prev a csv row)
+                        team_race_number = int(top_dict[key][i]['raceNumber']) #Grab the dict entry race num for comparison
+                        for key2 in top_dict[key][i]: #Now iterate through this driver's KEYS
+                            if(key2 == "drivers" and int(row[RACE_NUM]) == team_race_number): #Compare the lead driver's race num with this driver
+                                driver['driverCategory'] = top_dict[key][i][key2][0]['driverCategory'] #Adopt the lead driver's category
+                                top_dict[key][i][key2].append(driver) #Append this driver to the lead driver's team list
     if(lead): #Team info
         top_dict['configVersion'] = 1
         top_dict['entries'] = entries
@@ -231,6 +233,7 @@ top_dict = {} #Initialize the top dict
 #First, form teams by applying lead drivers ONLY
 read_csv_write_json(input_csv, 1)
 
+#code.interact(local=locals()) #Jump into interactive mode
 
 #Next, populate teams with teammates
 read_csv_write_json(input_csv, 0)
