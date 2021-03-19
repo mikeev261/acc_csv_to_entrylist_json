@@ -196,8 +196,12 @@ def read_csv_write_json(input_csv, lead):
                 driver['driverCategory'] = 3
             else: #GT4
                 driver['driverCategory'] = 2
-        driver['playerID'] = "S"+row[STEAM_ID]
-    
+        driver_steam_id_filtered = filter(str.isdigit, row[STEAM_ID])
+        driver_steam_id = "".join(driver_steam_id_filtered)
+        driver['playerID'] = "S" + driver_steam_id 
+
+        race_num_filtered = filter(str.isdigit, row[RACE_NUM])
+        race_num = "".join(race_num_filtered)    
         
         if(lead): #Team info
             team['drivers'] = [driver]
@@ -209,7 +213,8 @@ def read_csv_write_json(input_csv, lead):
                 team['isServerAdmin'] = 0
             
             team['forcedCarModel'] = car_num
-            team['raceNumber'] = int(row[RACE_NUM])
+
+            team['raceNumber'] = int(race_num)
             entries.append(team)
 
         if(not lead): #We are now iterating through the dict to add the teammates
@@ -218,7 +223,7 @@ def read_csv_write_json(input_csv, lead):
                     for i in range(len(top_dict[key])): #This is a list of dicts (each driver's form entry, prev a csv row)
                         team_race_number = int(top_dict[key][i]['raceNumber']) #Grab the dict entry race num for comparison
                         for key2 in top_dict[key][i]: #Now iterate through this driver's KEYS
-                            if(key2 == "drivers" and int(row[RACE_NUM]) == team_race_number): #Compare the lead driver's race num with this driver
+                            if(key2 == "drivers" and race_num == team_race_number): #Compare the lead driver's race num with this driver
                                 driver['driverCategory'] = top_dict[key][i][key2][0]['driverCategory'] #Adopt the lead driver's category
                                 top_dict[key][i][key2].append(driver) #Append this driver to the lead driver's team list
     if(lead): #Team info
