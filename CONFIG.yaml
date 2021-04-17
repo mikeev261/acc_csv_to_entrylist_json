@@ -1,0 +1,91 @@
+# CONFIG.yaml 
+# Modify this file to control how acc_csv_to_json operates, and how it interfaces with your google form
+
+admins:
+    - S76561199030471397
+    - S76561198329353077
+    - S76561197970355546
+
+car_limits:
+    total_gt3: 50
+    total_gt4: 0
+    total_car_per_type: 4
+
+#Align your google form answers (column numbers) to the script variables
+google_form_alignment:
+    email: 1
+    region: 2
+    team: 3
+    race_num: 4
+    first: 5 #Driver first name
+    last: 6 #Driver last name
+    lead_driver: 7
+    discord_id: 8 #Use this to create Discord roles
+    steam_id: 9
+    car_1: 10
+    car_2: 11
+    car_3: 12
+
+cars: #Make sure these match your form entry names. Don't edit the number. Comment out whatever you don't want to be selectable. 
+    0: "Porsche 991 GT3 R"
+    1: "Mercedes AMG GT3 (2015)"
+    2: "Ferrari 488 GT3 (2018)"
+    3: "Audi R8 LMS GT3"
+    4: "Lamborghini Huracan GT3 (2015)"
+    5: "McLaren 650S GT3"
+    6: "Nissan GT-R GT3 (2018)"
+    7: "BMW M6 GT3"
+    8: "Bentley Continental GT3 (2018)"
+    9: "Porsche 991II GT3 Cup"
+    10: "Nissan GT-R GT3 (2015)"
+    11: "Bentley Continental GT3 (2015)"
+    12: "Aston Martin V12 Vantage GT3"
+    13: "Lamborghini Gallardo R-EX GT3"
+    14: "Jaaaaaaaaaaaaaaaaaaaaaaaaag GT3"
+    15: "Lexus RC F GT3"
+    16: "Lamborghini Huracan GT3 Evo (2019)"
+    17: "Honda NSX GT3 (2017)"
+    18: "Lamborghini Huracan SuperTrofeo"
+    19: "Audi R8 LMS GT3 Evo"
+    20: "Aston Martin V8 Vantage GT3"
+    21: "Honda NSX GT3 Evo (2019)"
+    22: "McLaren 720S GT3"
+    23: "Porsche 991 II GT3 R"
+    24: "Ferrari 488 GT3 Evo (2020)"
+    25: "Mercedes AMG GT3 Evo (2020)"
+    26: ""
+    27: ""
+    28: ""
+    29: ""
+    30: ""
+    31: ""
+    32: ""
+    33: ""
+    34: ""
+    35: ""
+    36: ""
+    37: ""
+    38: ""
+    39: ""
+    40: ""
+    41: ""
+    42: ""
+    43: ""
+    44: ""
+    45: ""
+    46: ""
+    47: ""
+    48: ""
+    49: ""
+    50: "Alpine A110 GT4"
+    51: "Aston Martin V8 Vantage GT4"
+    52: "Audi R8 LMS GT4"
+    53: "BMW M4 GT4"
+    54: ""
+    55: "Chevrolet Camaro GT4.R"
+    56: "Ginetta G55 GT4"
+    57: "KTM X-Bow GT4"
+    58: "Maserati Granturismo MC GT4"
+    59: "McLaren 570S GT4"
+    60: "Mercedes AMG GT4"
+    61: "Porsche 718 Cayman GT4 Clubsport"
