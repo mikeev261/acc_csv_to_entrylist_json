@@ -194,6 +194,8 @@ def read_csv_write_json(input_csv, lead):
             gt3 = False
             driver = {} #Always initialize this for every pass
             if(lead): #First pass
+                if(row[LEAD_DRIVER] == "No"): #Not the lead driver, skip for this pass
+                    continue #Skip iteration of this loop
                 #Figure out if the car selection is legal
                 car_num1 = car_num_lookup(car_dict, row[CAR_1])
                 car_num2 = car_num_lookup(car_dict, row[CAR_2])
@@ -206,8 +208,7 @@ def read_csv_write_json(input_csv, lead):
                 else: 
                     gt4_rem -= 1
                 team = {}
-                if(row[LEAD_DRIVER] == "No"): #Not the lead driver, skip for this pass
-                    continue #Skip iteration of this loop
+
             else: #not lead
                 if(row[LEAD_DRIVER] == "Yes"): #Lead driver, skip for this pass (we got them already)
                     continue #Skip iteration of this loop
