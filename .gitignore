@@ -5,3 +5,5 @@ OUT
 BETA_ ACC Endurance Test Event.csv
 ERROR.log
 *.csv
+.vscode
+.vscode/*
