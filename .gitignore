@@ -1,3 +1,4 @@
+*.log
 OUT
 *.code-workspace
 *entrylist.json

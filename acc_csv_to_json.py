@@ -17,6 +17,7 @@ yaml_path = "./CONFIG.yaml"
 
 f_errors = open("ERROR.log", "+w")
 f_log = open("RUN.log", "+w")
+f_report = open("REPORT.log", "+w")
 ERROR_BUF = ""
 NUM_ERRORS = 0
 
@@ -24,7 +25,9 @@ def log(message):
     f_log.write(message)
     print(message)
 
-
+def report(message):
+    f_report.write(message)
+    log(message)
 
 try:
     log("Importing " + yaml_path)
@@ -146,10 +149,15 @@ def check_nums(driver, team, num):
     other_team_lead = ""
     if(int(num) in team_nums):
         error("ERROR: the team " + team + " number " + num + " lead by " + driver + " conflicts with existing team who registered before them.")
-        report_dict[team].update({'ERROR': "CAR NUMBER CONFLICT! MUST RE-REGISTER WITH NEW CAR NUMBER"})
+        #report_dict[team].update({'ERROR': "CAR NUMBER CONFLICT! MUST RE-REGISTER WITH NEW CAR NUMBER"})
         #exit()
+        num = int(num) + 1
+        error("ERROR: attempting to assign " + team + " the new number " + str(num) + " lead by " + driver)
+        return(check_nums(driver, team, str(num)))
     else:
+        log("CHECK_NUMS: assigned " + team + " with number " + str(num) + " lead by " + driver)
         team_nums.append(int(num))
+        return(num)
 
 def select_car(driver, car1, car2, car3):
     if(check_car(driver, car1, 1)):
@@ -166,22 +174,28 @@ def select_car(driver, car1, car2, car3):
         sys.exit()
 
 def list_selected_cars():
-    log("\n\n\nCARS SELECTED:")
+    report("\n\n\nCARS SELECTED:\n")
+    report(      "--------------\n")
     index = 0
+    total_cars = 0
     for car in car_rem:
         if(car_dict[index]):
             cars = TOTAL_CAR_PER_TYPE - car_rem[index]
             if(cars != 0):
-                log(car_dict[index] + " : " + str(cars))
-                log('\n')
+                report(car_dict[index] + " : " + str(cars))
+                total_cars = total_cars + cars
+                report('\n')
         index += 1
+    report("\nTOTAL NUMBER OF CARS (TEAMS): " + str(total_cars))
+    
 def list_exhausted_cars():
-    log("\n\n\nEXHAUSTED CARS: ")
+    report("\n\n\nEXHAUSTED CARS (no longer selectable):\n")
+    report(      "-------------------------------------\n")
     index = 0
     for car in car_rem:
         if(car_rem[index] == 0): 
-            log(car_dict[index])
-            log('\n')
+            report(car_dict[index])
+            report('\n')
         index += 1
 
 
@@ -266,7 +280,7 @@ def read_csv_write_json(input_csv, lead):
                 
                 team['forcedCarModel'] = car_num
     
-                team['raceNumber'] = int(race_num)
+                team['raceNumber'] = check_nums(drivername, team_name, race_num)
                 entries.append(team)
                 num_lead += 1
                 
@@ -277,7 +291,7 @@ def read_csv_write_json(input_csv, lead):
                 #report_dict.update()
                 #update_dict(report_dict,new_dict)
                 report_dict.update(new_dict)
-                check_nums(drivername, team_name, race_num)
+                #check_nums(drivername, team_name, race_num)
     
             if(not lead): #We are now iterating through the dict to add the teammates
                 #num_team = 0
@@ -341,8 +355,8 @@ final_gt4 = TOTAL_GT4 - gt4_rem
 log("GT3 Cars: " + str(final_gt3))
 log("GT4 Cars: " + str(final_gt4))
 
-list_selected_cars()
-list_exhausted_cars()
+#list_selected_cars()
+#list_exhausted_cars()
 log("\n")
 def generate_report(driver_dict):
     log(str(driver_dict))
@@ -360,37 +374,44 @@ log(report_yaml)
 
 
 log("\n")
-log("DISCORD LIST:")
+report("DISCORD LIST:")
 for name in discord_id_list:
-    log("\n")
-    log(name)
+    report("\n")
+    report(name)
 
 for key, value in report_dict.items():
-    log("\n=============================\n"+key+"\n=============================\n")
+    report("\n=============================\n"+key+"\n=============================\n")
     value_yaml = yaml.dump(value, sort_keys=False)
-    log(value_yaml)
+    report(value_yaml)
 
-log("\n")
 
-if(NUM_ERRORS):
-    log("ERRORS: " + str(NUM_ERRORS) + " errors saved into ERROR.log")
-    errors = f_errors.readlines()
-    log(ERROR_BUF)
-    f_errors.write(ERROR_BUF)
-    log("\n")
-    log("Taken numbers include: " + str(team_nums.tolist()))
 
-    
-
-log("\n\n")
-now = datetime.now()
-dt_string = now.strftime("%Y.%m.%d %H:%M:%S")
-log("This report was generated on " + dt_string)
 
 
 list_selected_cars()
 list_exhausted_cars()
 
 
+report("\n")
+
+if(NUM_ERRORS):
+    report("ERRORS: " + str(NUM_ERRORS) + " errors saved into ERROR.log")
+    errors = f_errors.readlines()
+    report(ERROR_BUF)
+    f_errors.write(ERROR_BUF)
+    report("\n")
+    team_nums_list = team_nums.tolist()
+    team_nums_list = sorted(team_nums_list)
+    report("Taken numbers include: " + str(team_nums_list))
+
+
+
+report("\n\n")
+now = datetime.now()
+dt_string = now.strftime("%Y.%m.%d %H:%M:%S")
+report("This report was generated on " + dt_string)
+
+
 f_log.close()
+f_report.close()
 f_errors.close()
